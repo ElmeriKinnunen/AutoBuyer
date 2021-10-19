@@ -1,3 +1,5 @@
+from Options import color
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -14,33 +16,51 @@ logging.basicConfig(
 browser = webdriver.Firefox()
 logging.info("Browser opened")
 
-try:
+END = color.DEFAULT
+url = input
 
-    url = input ("Enter url: ")
-    browser.get(url)
-    logging.info("Url entered")
+while url != "exit":
+    try:
 
-except Exception as e:
-    print("Url is missing or not found.")
-    print("ERROR: ")
-    print(e)
+        url = input ("Enter url: ")
+        browser.get(url)
+        logging.info("Url entered")
 
-#time.sleep(3)
+    except Exception as e:
+        print(color.HEADER + "Url is missing or not found." + END)
+        print(color.ERROR + "ERROR: " + END)
+        print(e)
 
-try:
+    logging.info("Waking up the bot")
+    time.sleep(1)
+    print("3")
+    time.sleep(1)
+    print("2")
+    time.sleep(1)
+    print("1")
+    print(color.HEADER + "Start" + END)
 
-    while browser.current_url == (browser): #add product to the cart while bot is in the product page
-        try:
-            addCart = browser.find_element(By.CLASS_NAME, "site-btn-addToBasket-lg") #Currently "add cart" button class need to change manually
-            addCart.click()
-        except NoSuchElementException:
-            pass
-        logging.info("Product can't add to the cart!")
+    try:
 
-    logging.info("proruct added to cart!")
-    
-except Exception as e:
-    print("Can't add product to the cart.")
-    print("ERROR: ")
-    print(e)
+        #add product to the cart while bot is in the product page.
+
+        while browser.current_url != "<enter url from page after the product is succesfully added to cart>":
+
+            try:
+                #Currently "add cart" button HTML class need to change manually
+                addCart = browser.find_element(By.CLASS_NAME, "site-btn-addToBasket-lg")
+                addCart.click()
+            except NoSuchElementException:
+                pass
+
+            logging.info(color.WARNING + "Product can't add to the cart!" + END)
+
+            browser.refresh()
+
+        logging.info(color.GREEN + color.BLINK + "proruct added succesfully to the cart!" + END)
+        
+    except Exception as e:
+        print(color.HEADER + "Shit hits the fan.." + END)
+        print(color.ERROR + "ERROR: " + END)
+        print(e)
 
