@@ -1,50 +1,58 @@
-from Options import color
+import time
+import sys
+import logging
+#import validators
+
+import Actions as action
+import Options as opt
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
-
-import time
-import logging
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
     level=logging.INFO,
     datefmt='%Y-%m-%d %H:%M:%S')
 
-browser = webdriver.Firefox()
-logging.info("Browser opened")
-
+color = opt.color
 END = color.DEFAULT
-url = input
+command = input
 
-while url != "exit":
+browser = action.openBrowser()
+
+
+while command != "exit":
     try:
-
-        url = input ("Enter url: ")
-        browser.get(url)
+        command = input ("Enter url/exit: ")
+        browser.get(command) #set url to browser
         logging.info("Url entered")
 
     except Exception as e:
-        print(color.HEADER + "Url is missing or not found." + END)
-        print(color.ERROR + "ERROR: " + END)
-        print(e)
+        if command == "exit":
+            print("Exiting from bot..")
+            sys.exit(1)
+        else:
+            print(color.HEADER + "Url is missing or url type is wrong" + END)
+            print(color.ERROR + "ERROR: " + END)
+            print(e)
+            sys.exit(1)
+
 
     logging.info("Waking up the bot")
     time.sleep(1)
-    print("3")
-    time.sleep(1)
-    print("2")
-    time.sleep(1)
-    print("1")
+    print(".")
+    time.sleep(0.5)
+    print(".")
+    time.sleep(0.5)
+    print(".")
     print(color.HEADER + "Start" + END)
 
     try:
 
         #add product to the cart while bot is in the product page.
 
-        while browser.current_url != "<enter url from page after the product is succesfully added to cart>":
+        while browser.current_url != "<url>":
 
             try:
                 #Currently "add cart" button HTML class need to change manually
@@ -59,6 +67,21 @@ while url != "exit":
 
         logging.info(color.GREEN + color.BLINK + "proruct added succesfully to the cart!" + END)
         
+    except Exception as e:
+        print(color.HEADER + "Shit hits the fan.." + END)
+        print(color.ERROR + "ERROR: " + END)
+        print(e)
+
+    try:
+
+        command = input ("Check your browser! Is the product correct? yes/no : ")
+        
+        if command != "yes":
+            print("Exiting from bot..")
+            sys.exit(1)
+        else:
+            action.checkout(browser)
+
     except Exception as e:
         print(color.HEADER + "Shit hits the fan.." + END)
         print(color.ERROR + "ERROR: " + END)
